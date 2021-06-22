@@ -55,6 +55,7 @@ public class Constants {
 	public static String websocket = ChatContainerFactory.WS_IMPL_TC7;
 	
 	public static boolean isCRM = false;
+	public static boolean Started = false;
 	
 	private static HashMap<String, Integer> TYPE = null;
 	private static HashMap<String, String> CMD = null;

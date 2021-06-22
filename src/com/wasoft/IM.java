@@ -2,11 +2,15 @@ package com.wasoft;
 
 import java.io.InputStream;
 import java.net.URL;
+import java.util.List;
+
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.namespace.QName;
+
+import com.wasoft.client.im.ws.wsimport.ArrayOfString;
 import com.wasoft.client.im.ws.wsimport.IMService;
 import com.wasoft.client.im.ws.wsimport.IMServiceService;
 
@@ -22,7 +26,7 @@ public class IM {
 	private String 	wsdl 		= "/portal/services/IMService";
 	
 	private String 	wsServer 	= "127.0.0.1";
-	private int 	wsPort 		= 7001;
+	private int 	wsPort 		= 8080;
 	
 	private IM(){}
 	private IMService getIMService(){
@@ -56,12 +60,12 @@ public class IM {
 			wsServer = params.server;
 			wsPort	 = params.port;			
 		}
-		catch(Exception e)
-		{
-			System.err.println("JAXB error: " + e.getMessage());			
-
+		catch(Exception e){
+			System.err.println("JAXB error: " + e.getMessage());
 		}		
-		return protocol + "://" + wsServer + ":" + wsPort + wsdl + "?wsdl";
+		String url = protocol + "://" + wsServer + ":" + wsPort + wsdl + "?wsdl";
+		System.out.println("url: " + url);
+		return url;
 	}
 	
 	public static IMService getService(){
@@ -75,7 +79,19 @@ public class IM {
 	
 		System.out.println(IM.getService().getCurrentTime());
 		
-		IM.getService().pushCall(1637, "Portal.Test", "{name:'luojun'}");
+		System.out.println("pushCall: " + IM.getService().pushCall(334, "Portal.Test", "{name:'luojun'}"));
+		System.out.println("isStarted: " + IM.getService().isStarted());
+		
+		ArrayOfString as = IM.getService().getAllOnlineUsers();
+		if (as != null){
+			List <String> al= as.getString();
+			for(String s: al){
+				System.out.println(s);
+			}
+		}
+		else{
+			System.out.println("nobody");
+		}
 		
 	}
 }

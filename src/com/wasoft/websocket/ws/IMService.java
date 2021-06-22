@@ -14,7 +14,6 @@ import java.util.Collection;
 import java.util.Date;
 
 import javax.jws.WebService;
-
 import com.wasoft.websocket.Constants;
 import com.wasoft.websocket.chat.ChatContainerFactory;
 import com.wasoft.websocket.chat.ChatMessageCenter;
@@ -39,6 +38,28 @@ public class IMService extends BaseService{
 			instance = new IMService();
 		}
 		return instance;
+	}
+	/**
+	 * 检查IM是否已启动 	
+	 * 门户：
+	 * if(IMService.getService().isStarted){
+	 * 	  //已启动....
+	 * }
+	 * else{
+	 * 	  //未启动...
+	 * }
+	 * 
+	 * 应用：
+	 * if(IM.getService().isStarted){
+	 * 	  //已启动....
+	 * }
+	 * else{
+	 * 	  //未启动...
+	 * }
+	 * @return 
+	 */
+	public boolean isStarted(){
+		return Constants.Started;
 	}
 	/**
 	 * 返回IM服务的版本号
@@ -115,8 +136,7 @@ public class IMService extends BaseService{
     	Collection<IChatMessageIn> conns = ChatContainerFactory.getChatContainer().getConnections();
     	for (IChatMessageIn conn : conns) {
     		users.add(conn.getUi().getUserid() + ", " + conn.getUi().getNickname());
-    	}
-    	
+    	}    	
     	return users;
 	}
 	

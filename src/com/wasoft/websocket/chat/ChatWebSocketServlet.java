@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.catalina.websocket.StreamInbound;
 import org.apache.catalina.websocket.WebSocketServlet;
 
+import com.wasoft.websocket.Constants;
 import com.wasoft.websocket.chat.bean.ClusterHost;
 import com.wasoft.websocket.util.Tool;
 
@@ -41,6 +42,7 @@ public class ChatWebSocketServlet extends WebSocketServlet implements IChatConta
         ctxPath = this.getServletConfig().getServletContext().getContextPath();
         
         cws = this;
+        Constants.Started = true;
         Tool.log("=== init ChatWebSocketServlet success ===");
 	}
 	

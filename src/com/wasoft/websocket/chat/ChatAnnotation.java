@@ -49,8 +49,8 @@ public class ChatAnnotation implements IChatContainer{
     }
     @OnOpen
     public void onOpen(Session session) {
-        this.session = session;        
-        connections.add(1l, this); 
+//        this.session = session;        
+//        connections.add(1l, this); 
         
     }
     
