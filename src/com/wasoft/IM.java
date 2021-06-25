@@ -1,5 +1,7 @@
 package com.wasoft;
 
+import java.io.BufferedInputStream;
+import java.io.FileInputStream;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.List;
@@ -10,6 +12,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.namespace.QName;
 
+import com.mixky.system.ContextHolder;
 import com.wasoft.client.im.ws.wsimport.ArrayOfString;
 import com.wasoft.client.im.ws.wsimport.IMService;
 import com.wasoft.client.im.ws.wsimport.IMServiceService;
@@ -46,7 +49,10 @@ public class IM {
 			
 			InputStream is = null;
 			try{
-				is = this.getClass().getResourceAsStream("/../" + paramFile);
+				//is = this.getClass().getResourceAsStream("/../" + paramFile);
+				String filePath = ContextHolder.instance().getWebRoot()+ System.getProperty("file.separator") + "WEB-INF" + System.getProperty("file.separator") + paramFile;
+				System.out.println("filePath = " + filePath);
+				is = new BufferedInputStream(new FileInputStream(filePath));
 			}
 			catch(Exception e){System.err.println("get context file error: " + e.getMessage());}
 			if (is == null){

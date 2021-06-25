@@ -256,11 +256,16 @@ var ChatHelper = {
     },
     getPicurl: function(node){
         var picurl;
-        if(node.pic){
-            picurl = '/OA/upload/'+ node.id + '/thumbnails/' + node.pic;
+        if (isCRM){
+            picurl = "download/photo/" + node.id + ".JPG";
         }
         else{
-            picurl = '/OA/upload/nobody/' + Math.floor(Math.random()*this.maxPic + 1) + ".gif";
+            if(node.pic){
+                picurl = '/OA/upload/'+ node.id + '/thumbnails/' + node.pic;
+            }
+            else{
+                picurl = '/OA/upload/nobody/' + Math.floor(Math.random()*this.maxPic + 1) + ".gif";
+            }
         }
         Console.log("picurl: " + picurl);
         return picurl;
@@ -740,7 +745,6 @@ Mixky.wasoft.lib.chatroom.init = function(){
                         }
                     }
                 }
-
             }
         ]
     });
@@ -794,7 +798,8 @@ Mixky.wasoft.lib.chatroom.init = function(){
                             winMgr.openWindow(node);
                         }
                         else{
-                            geo.openMap();
+                            //geo.openMap();
+                        	winMgr.openUploadWin();
                         }
                     }
                 },
@@ -942,7 +947,8 @@ Mixky.wasoft.lib.chatroom.init = function(){
                 if (node.isLeaf()){
                     if(node.parentNode.id == 'online'){
                         if(node.id == Chat.userid){
-                            Console.log('Debug: ignore myself node');
+                            //Console.log('Debug: ignore myself node');
+                            winMgr.openUploadWin();
                         }
                         else{
                             winMgr.openWindow(node);//打开用户对话窗口
@@ -2473,14 +2479,112 @@ SmsWindow = Ext.extend(Ext.Window , {
     }
 });
 
+UploadWindow = Ext.extend(Ext.Window , {
+    constructor : function(){
+        var me = this;
+        SmsWindow.superclass.constructor.call(this , {
+            title: '上传图片',
+            width:280,
+            height:360,
+            closable:true,
+            closeAction:"hide",
+            plain:true,
+            bodyStyle:'padding:5px;',
+            items:[
+                {
+                    baseCls:'x-plain',
+                    xtype:'form',
+                    labelWidth:1,
+                    items:[
+                        {
+                            xtype:'displayfield',
+                            value:'将图片拉到以下方框中，点击“存盘”更改头像',
+                            labelSeparator:''
+                        },
+                        {
+                            xtype: 'box',
+                            id:'user-photo',
+                            width: 180,
+                            height: 200,
+                            style:"align: center;float:left;width:180px;height:200px;margin:10px 0 0 0;border:1px solid #015EAC;color:#666;",
+                            autoEl: {
+                                tag: 'img'
+                            },
+                            listeners:{
+                                'render': function(){
+                                    Ext.fly(this.el).on("dragover",function(e){
+                                            e.stopPropagation(); e.preventDefault();
+                                        },false
+                                    ).on("drop",function(e){
+                                        e.stopPropagation();e.preventDefault();
+                                        var files = e.browserEvent.dataTransfer.files;
+                                        for (var i = 0, f; f = files[i]; i++) {
+                                            var t = f.type ? f.type : 'n/a';
+                                            if (t.indexOf('image') >= 0){//只支持图片格式
+                                                var reader = new FileReader();
+                                                reader.onload = (function (file){
+                                                    if(file.size <= ChatHelper.maxImage*1024){
+                                                        return function (e){
+                                                            Ext.getDom('user-photo').src = e.target.result;
+                                                        };
+                                                    }
+                                                    else{
+                                                        alert('上传文件请控制在' + ChatHelper.maxImage + 'k内');
+                                                    }
+                                                })(f);
+                                                reader.readAsDataURL(f);
+                                                return;
+                                            }
+                                            else{
+                                                alert('只能放置图片文件');
+                                            }
+                                        }
+                                    },false
+                                    );
+                                }
+                            }
+                        }
+                    ]
+                }
+            ],
+            buttons:[
+                {
+                    id: 'photo-save',
+                    text: '存  盘',
+                    handler: function(){
+                        Chat.sendMessage( Ext.getDom('user-photo').src,Chat.TYPE.get("CMD"), Chat.userid, 'img');
+                    }
+                },
+                {
+                    text:'取 消',
+                    handler: function(){
+                        me.hide();
+                    }
+                }
+            ],            
+            close: function(){
+                me.hide();
+            }
+        });
+    }
+});
+
 var winMgr ={
     userWindows: new Ext.util.MixedCollection(),
     groupWindows: new Ext.util.MixedCollection(),
     createGroupWindow: null,
     smsWindow: null,
+    uploadWindow: null,
     openHistoryWindow: function(node){
         var w = this.openWindow(node);
         w.history();
+    },
+    openUploadWin:function(){
+    	if(!this.uploadWindow){
+            Console.log("Debug: open the uploadWindow.");
+            this.uploadWindow = new UploadWindow();
+        }
+        return this.uploadWindow.show();
     },
     openSmsWin: function(){
         if(!this.smsWindow){
@@ -3023,9 +3127,9 @@ var t = new Ext.util.DelayedTask(function(){
 t.delay(ChatHelper.delay);
 
 //注册一个简单的测试方法
-IM.regMethod("Portal.Test",
+IM.regMethod("Portal.Notify",
     function(obj){
-        IM.notify("title","Hello " + obj.name);
+        IM.notify("提 示", obj.msg);
     }
 );
 //注册一个较复杂的方法，该方法可以强制用户退出门户

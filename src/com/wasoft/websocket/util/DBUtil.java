@@ -28,7 +28,15 @@ public class DBUtil {
 				"left join hr_post d on c.f_post_id=d.id " + 
 				"left join hr_rzxxb e on a.id=e.userid " +
 				"where a.id=" + userid;
-
+		if (Constants.isCRM){
+			sql = "select b.f_picturename,b.yddh, e.mc, d.f_caption bmmc, a.f_caption name,a.f_name f_name, case when(b.xb='女') then 1 else 0 end sex,a.f_email " +
+				"from t_mk_sys_user a " +
+				"left join cr_gr b on a.grbh=b.grbh " + 
+				"left join t_mk_sys_dept_user c on a.grbh=c.grbh " +
+				"left join t_mk_sys_dept d on d.id=c.f_dept_id " +
+				"left join hr_post e on e.id=c.f_post_id " +
+				"where a.id=" + userid;
+		}
 		List<List<String>> userInfo = MixkyDataAccess.instance().find(sql, null);
 		return userInfo;
 	}
@@ -41,6 +49,15 @@ public class DBUtil {
 				"left join hr_post d on c.f_post_id=d.id " + 
 				"left join hr_rzxxb e on a.id=e.userid " +
 				"where a.f_state=0";
+		if (Constants.isCRM){
+			sql = "select b.f_picturename,b.yddh, e.mc, d.f_caption bmmc, a.f_caption name,a.f_name f_name, case when(b.xb='女') then 1 else 0 end sex,a.f_email,a.id id " +
+					"from t_mk_sys_user a " +
+					"left join cr_gr b on a.grbh=b.grbh " + 
+					"left join t_mk_sys_dept_user c on a.grbh=c.grbh " +
+					"left join t_mk_sys_dept d on d.id=c.f_dept_id " +
+					"left join hr_post e on e.id=c.f_post_id " +
+					"where a.f_state=0";
+		}
 		List<List<String>> userInfo = MixkyDataAccess.instance().find(sql, null);
 		return userInfo;
 	}
@@ -380,7 +397,25 @@ public class DBUtil {
 	//通过用户名获取用户信息
 	public static String getUserInfo(String name){
 		try {
-			String sql = "select d.f_name,d.f_caption,d.f_email,a.f_tel, c.mc, d.f_dept_name bmmc,e.f_mc,f.f_mc " +
+			if(Constants.isCRM){
+				String sql = "select a.grbh,a.f_name,a.f_caption,b.yddh,b.gddh,d.f_caption bmmc,e.mc " +
+							"from t_mk_sys_user a " + 
+							"left join cr_gr b on a.grbh=b.grbh " +
+							"left join t_mk_sys_dept_user c on a.grbh=c.grbh " +
+							"left join t_mk_sys_dept d on d.id=c.f_dept_id " +
+							"left join hr_post e on e.id=c.f_post_id " +
+							"where a.f_name='" + name +"' or a.f_caption='" + name +"'";
+				List<List<String>> userInfo = MixkyDataAccess.instance().find(sql, null);
+				if(userInfo.size() > 0){
+					List<String> user = userInfo.get(0);
+					String s = String.format("客户编号：%s<br>登录名：%s<br>姓名：%s<br>移动电话：%s<br>固定电话：%s<br>部门：%s<br>职务：%s",
+							user.get(0),user.get(1),user.get(2),user.get(3),user.get(4),user.get(5),user.get(6));
+					
+					return s;
+				}
+			}
+			else{
+				String sql = "select d.f_name,d.f_caption,d.f_email,a.f_tel, c.mc, d.f_dept_name bmmc,e.f_mc,f.f_mc " +
 						 "from hr_userxx a " +
 						 "left join t_mk_sys_dept_user b on b.f_user_id=a.id " +
 						 "left join hr_post c on b.f_post_id=c.id " + 
@@ -388,16 +423,17 @@ public class DBUtil {
 						 "left join hr_bm_Loandept e on a.f_qydw=e.f_bm " +
 						 "left join hr_bm_xz_level f on a.f_xzlevel=f.f_bm " +
 						 "where d.f_name='" + name +"' or d.f_caption='" + name +"'";
-			List<List<String>> userInfo = MixkyDataAccess.instance().find(sql, null);
-			if(userInfo.size() > 0){
-				List<String> user = userInfo.get(0);
-				String s = String.format("工号：%s<br>姓名：%s<br>电邮：%s<br>电话：%s<br>职务：%s<br>部门：%s<br>签约单位：%s<br>行政级别：%s",
-						user.get(0),user.get(1),user.get(2),user.get(3),user.get(4),user.get(5),user.get(6),user.get(7));
-				
-				return s;
-			}
-			
-		} catch (Exception e) {
+				List<List<String>> userInfo = MixkyDataAccess.instance().find(sql, null);
+				if(userInfo.size() > 0){
+					List<String> user = userInfo.get(0);
+					String s = String.format("工号：%s<br>姓名：%s<br>电邮：%s<br>电话：%s<br>职务：%s<br>部门：%s<br>签约单位：%s<br>行政级别：%s",
+							user.get(0),user.get(1),user.get(2),user.get(3),user.get(4),user.get(5),user.get(6),user.get(7));
+					
+					return s;
+				}
+			}			
+		} 
+		catch (Exception e) {
 			Tool.err("get userinfo error: " + e.getMessage());			
 		}
 		return name + ": 未找到该用户！" ;
@@ -409,6 +445,11 @@ public class DBUtil {
 						"from hr_userxx a left join t_mk_sys_user b on a.id=b.id " +
 						"where b.f_state=0 and to_char(f_birthday,'mmdd')=to_char(sysdate,'mmdd')";
 						//"where a.id=1618";
+			if (Constants.isCRM){
+				sql = "select a.id,a.f_name,b.yddh,to_char(b.csrq,'yyyymmdd'),a.f_caption " +
+						"from t_mk_sys_user a left join cr_gr b on a.grbh=b.grbh " +
+						"where a.f_state=0 and to_char(b.csrq,'mmdd')=to_char(sysdate,'mmdd')";
+			}
 			return MixkyDataAccess.instance().find(sql, null);
 		}
 		catch(Exception e){

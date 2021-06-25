@@ -14,7 +14,7 @@ public class UserInfo {
 	private String mobile = "";
 	private String bm = "";
 	private String addr = "";
-	private int sex = 0;
+	private int sex = 0;//0:male, 1:female
 	private int status = 0;
 	private long loginTime;	
 	private String lt = DateTool.formatDate(null, DateTool.FORMAT_DATETIME);//loginTime

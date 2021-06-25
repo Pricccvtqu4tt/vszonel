@@ -170,7 +170,9 @@ public class IMService extends BaseService{
 	public boolean pc(long userid, String methodName){
 		return pushCall(userid, methodName, "{}");
 	}
-	
+	public boolean pushNotify(long userid, String msg){
+		return pushCall(userid, "Portal.Notify", "{msg:'" + msg + "'}");
+	}
 	//强制退出
 	public void forceExit(long userid){
 		ChatMessageCenter.forceExit(userid);

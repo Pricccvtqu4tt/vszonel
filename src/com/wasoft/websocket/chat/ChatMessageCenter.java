@@ -2,7 +2,9 @@ package com.wasoft.websocket.chat;
 
 import java.util.Collection;
 import java.util.Date;
+
 import org.apache.tomcat.util.res.StringManager;
+
 import com.google.gson.Gson;
 import com.mixky.toolkit.DateTool;
 import com.wasoft.websocket.Constants;
@@ -23,39 +25,59 @@ public class ChatMessageCenter {
 	protected static final StringManager sm = StringManager.getManager(Constants.Package);
     //处理系统指令
     public static void handleCommand(IChatMessageIn cmi, Message in){
-    	String cmd = in.getContent();    	
-    	if (cmd.equals(Constants.getCmd("REFRESH_USER_LIST"))){	        		
-    		ChatMessageHelper.sendRefreshUserList(in, cmi);
+    	if (in.getTitle().equalsIgnoreCase("img")){//更新头像照片
+    		String ret = "更新照片失败！";
+    		try{
+        		String dir = cmi.getCwss().getRootPath() + Constants.DOWNLOADDIR + "photo/";        		
+        		String imgName = cmi.getUi().getUserid() + ".JPG";        		
+        		String imgPath = dir + imgName;        		
+        		if(Tool.generateImage(in.getContent(), imgPath)){
+        			ret = "更新照片成功";		
+        		}        		
+        	}
+        	catch(Exception e){
+        		Tool.err(e.getMessage());
+        		ret = e.getMessage();
+        	}
+    		//发送结果
+    		System.out.println(ret + ",userid = " + in.getTo());
+    		IMService.getService().pushNotify(in.getTo(), ret);
     	}
-    	else if (cmd.equals(Constants.getCmd("REFRESH_GROUP_USER"))){
-    		WorkGroupManager.sendGroupUser(cmi, in);
-    	}
-    	else if (cmd.equals(Constants.getCmd("CREATE_WORKGROUP"))){	
-    		WorkGroupManager.createWorkGroup(cmi, in);
-    	}
-    	else if (cmd.equals(Constants.getCmd("DESTROY_WORKGROUP"))){	
-    		WorkGroupManager.destroyWorkGroup(cmi, in);
-    	}
-    	else if (cmd.equals(Constants.getCmd("ADD_WORKGROUP_USER"))){
-    		WorkGroupManager.addGroupUser(cmi, in);	        		
-    	}
-    	else if (cmd.equals(Constants.getCmd("DEL_WORKGROUP_USER"))){	        		
-    		WorkGroupManager.delGroupUser(cmi, in);
-    	}
-    	else if (cmd.equals(Constants.getCmd("EXIT_WORKGROUP"))){	        		
-    		WorkGroupManager.ExitWorkGroup(cmi, in);
-    	}
-    	else if (cmd.equals(Constants.getCmd("SMS_GET_PHONE"))){	        		
-    		ChatMessageHelper.sendUserPhone(cmi, in);
-    	}
-    	else if (cmd.equals(Constants.getCmd("SMS_SEND_MSG"))){	        		
-    		ChatMessageHelper.sendSmsMsg(cmi, in);
-    	}
-    	else if (cmd.equals(Constants.getCmd("SYSTEM_USER_STATUS"))){	        		
-    		ChatMessageHelper.sendUserStatus(cmi, in);
-    	}
-    	else{
-    		Tool.err("not find command: " + cmd);
+    	else{    	
+	    	String cmd = in.getContent();    	
+	    	if (cmd.equals(Constants.getCmd("REFRESH_USER_LIST"))){	        		
+	    		ChatMessageHelper.sendRefreshUserList(in, cmi);
+	    	}
+	    	else if (cmd.equals(Constants.getCmd("REFRESH_GROUP_USER"))){
+	    		WorkGroupManager.sendGroupUser(cmi, in);
+	    	}
+	    	else if (cmd.equals(Constants.getCmd("CREATE_WORKGROUP"))){	
+	    		WorkGroupManager.createWorkGroup(cmi, in);
+	    	}
+	    	else if (cmd.equals(Constants.getCmd("DESTROY_WORKGROUP"))){	
+	    		WorkGroupManager.destroyWorkGroup(cmi, in);
+	    	}
+	    	else if (cmd.equals(Constants.getCmd("ADD_WORKGROUP_USER"))){
+	    		WorkGroupManager.addGroupUser(cmi, in);	        		
+	    	}
+	    	else if (cmd.equals(Constants.getCmd("DEL_WORKGROUP_USER"))){	        		
+	    		WorkGroupManager.delGroupUser(cmi, in);
+	    	}
+	    	else if (cmd.equals(Constants.getCmd("EXIT_WORKGROUP"))){	        		
+	    		WorkGroupManager.ExitWorkGroup(cmi, in);
+	    	}
+	    	else if (cmd.equals(Constants.getCmd("SMS_GET_PHONE"))){	        		
+	    		ChatMessageHelper.sendUserPhone(cmi, in);
+	    	}
+	    	else if (cmd.equals(Constants.getCmd("SMS_SEND_MSG"))){	        		
+	    		ChatMessageHelper.sendSmsMsg(cmi, in);
+	    	}
+	    	else if (cmd.equals(Constants.getCmd("SYSTEM_USER_STATUS"))){	        		
+	    		ChatMessageHelper.sendUserStatus(cmi, in);
+	    	}
+	    	else{
+	    		Tool.err("not find command: " + cmd);
+	    	}
     	}
     }
     
@@ -211,11 +233,11 @@ public class ChatMessageCenter {
 			if(qr_content.length() > 3){
     			String qr = qr_content.substring(3);
     			String imgName = cmi.getUi().getUserid() + "_" + System.currentTimeMillis() +".png";
-    			String dir = cwss.getRootPath() + "/download/";
+    			String dir = cwss.getRootPath() + Constants.DOWNLOADDIR;
         		String dirext = Tool.getDirext(dir);
     			String imgPath = dir + dirext + imgName;	            			 
     			if(TwoDimensionCode.encoderQRCode(qr, imgPath)){
-    				String imgurl =  "<img src='" + cwss.getCtxPath() + "/download/" + dirext + imgName + "'/>";
+    				String imgurl =  "<img src='" + cwss.getCtxPath() + Constants.DOWNLOADDIR + dirext + imgName + "'/>";
     				m.setContent(imgurl);	
     			}
     			else{
