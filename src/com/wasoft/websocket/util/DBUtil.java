@@ -29,7 +29,7 @@ public class DBUtil {
 				"left join hr_rzxxb e on a.id=e.userid " +
 				"where a.id=" + userid;
 		if (Constants.isCRM){
-			sql = "select b.f_picturename,b.yddh, e.mc, d.f_caption bmmc, a.f_caption name,a.f_name f_name, case when(b.xb='女') then 1 else 0 end sex,a.f_email " +
+			sql = "select b.f_picturename,b.yddh, e.mc, d.f_caption bmmc, a.f_caption name,a.f_name f_name, case when(b.xb='2') then 1 else 0 end sex,a.f_email " +
 				"from t_mk_sys_user a " +
 				"left join cr_gr b on a.grbh=b.grbh " + 
 				"left join t_mk_sys_dept_user c on a.grbh=c.grbh " +
@@ -50,7 +50,7 @@ public class DBUtil {
 				"left join hr_rzxxb e on a.id=e.userid " +
 				"where a.f_state=0";
 		if (Constants.isCRM){
-			sql = "select b.f_picturename,b.yddh, e.mc, d.f_caption bmmc, a.f_caption name,a.f_name f_name, case when(b.xb='女') then 1 else 0 end sex,a.f_email,a.id id " +
+			sql = "select b.f_picturename,b.yddh, e.mc, d.f_caption bmmc, a.f_caption name,a.f_name f_name, case when(b.xb='2') then 1 else 0 end sex,a.f_email,a.id id " +
 					"from t_mk_sys_user a " +
 					"left join cr_gr b on a.grbh=b.grbh " + 
 					"left join t_mk_sys_dept_user c on a.grbh=c.grbh " +

@@ -10,8 +10,8 @@ chat.message.workgroup.cmd.destroy.failed=解散工作组失败
 chat.message.proxy.all=【群发信息】<br>
 chat.message.proxy.name=小秘书
 chat.message.proxy.zw=服务代理
-chat.message.proxy.bm=伟奥软件
-chat.message.proxy.sysinfo=<table style="border-collapse:collapse;" width="95%" cellPadding=1 align=center border=1><caption>您好，我是你的小秘书，上岗时间 {0}<br>已工作 {1}, 最高在线人数 {2}，服务次数 {3}<br>发送 <b>h</b> 获取指令格式</caption></table>
+chat.message.proxy.bm=服务中心
+chat.message.proxy.sysinfo=<table style="border-collapse:collapse;" width="95%" cellPadding=1 align=center border=1><caption>您好，我是您的小秘书，上岗时间 {0}<br>已工作 {1}, 最高在线人数 {2}，服务次数 {3}<br>发送 <b>h</b> 获取指令格式</caption></table>
 chat.message.proxy.help=<table style="border-collapse:collapse;" width="95%" cellPadding=1 align=center border=1><thead><tr><th><b>指令</b></th><th><b>说明</b></th></tr></thead><tbody><tr><td>to@姓名[员工编号]</td><td>打开指定用户窗口</td></tr><tr><td>info@姓名[员工编号]</td><td>查询用户名片</td></tr><tr><td>all@信息</td><td>发送消息给所有在线用户</td></tr><tr><td>qr@编码信息</td><td>生成二维码，可将图片拖拽到桌面存盘</td></tr><tr><td>ip@IP地址</td><td>查询IP地址</td></tr><tr><td>tel@手机号码</td><td>查询电话归属地</td></tr><tr><tr><td>API</td><td>WebService服务接口和前端调用</td></tr><tr><td colspan='2'>例：to@乔布斯&nbsp;或者：to@10035&nbsp;或者：<b>找</b>乔布斯&nbsp;或者：to10002</td></tr></tbody></table>
 chat.message.proxy.api=api.html
 chat.message.proxy.nobody=: 未找到该用户或已离职，问问元方怎么看！

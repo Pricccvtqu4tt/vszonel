@@ -272,7 +272,10 @@ public class ChatMessageCenter {
 				m.setContent(sm.getString("chat.message.proxy.cmd.error"));
 			}
 			sendProxyMsg(cmi, m);
-		}		
+		}
+		else if(cmd.toUpperCase().startsWith("REFRESH")){
+			DBCache.refreshUserInfos();
+		}
 		else{            			
 			m.setContent(sm.getString("chat.message.proxy.sysinfo", 
 					DateTool.formatDate(ChatContainerFactory.getChatContainer().getStartTime(), DateTool.FORMAT_DATETIME), 
