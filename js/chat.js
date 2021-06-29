@@ -2556,7 +2556,7 @@ UploadWindow = Ext.extend(Ext.Window , {
                     }
                 },
                 {
-                    text:'取 消',
+                    text:'关  闭',
                     handler: function(){
                         me.hide();
                     }

@@ -25,7 +25,7 @@ public class ThreadListener implements ServletContextListener{
 		//HttpProxy.startProxy();
 		
 		//new EnvironmentAgent();//JMX
-		//StartService.init();
+		//StartService.init();//WebService
 		//new ClusterThread().start();
 	}
 	

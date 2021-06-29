@@ -275,6 +275,8 @@ public class ChatMessageCenter {
 		}
 		else if(cmd.toUpperCase().startsWith("REFRESH")){
 			DBCache.refreshUserInfos();
+			m.setContent("refresh userinfo success");
+			sendProxyMsg(cmi, m);
 		}
 		else{            			
 			m.setContent(sm.getString("chat.message.proxy.sysinfo", 
